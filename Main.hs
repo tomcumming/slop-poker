@@ -1,6 +1,14 @@
 module Main where
 
+import System.Console.ANSI
+
 main :: IO ()
 main = do
-  putStrLn "\ESC[1;32m♠ Slop Poker \ESC[1;31m♥\ESC[0m"
-  putStrLn "\ESC[36mHello from terminal Hold'em.\ESC[0m"
+  setSGR [SetColor Foreground Vivid Green, SetConsoleIntensity BoldIntensity]
+  putStr "♠ Slop Poker "
+  setSGR [SetColor Foreground Vivid Red, SetConsoleIntensity BoldIntensity]
+  putStrLn "♥"
+  setSGR [Reset]
+  setSGR [SetColor Foreground Vivid Cyan]
+  putStrLn "Hello from terminal Hold'em."
+  setSGR [Reset]

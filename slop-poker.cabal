@@ -5,5 +5,7 @@ build-type: Simple
 
 executable slop-poker
   main-is: Main.hs
-  build-depends: base
+  build-depends:
+    ansi-terminal,
+    base
   default-language: GHC2024
