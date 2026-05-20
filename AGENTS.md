@@ -1,0 +1,4 @@
+- Work in small steps: (Unless specifically requested)
+  - Just add **2-3 functions or datatypes at a time**.
+  - Feel free to used undefined for placeholders.
+- Prepare commit messages in `COMMIT.md` when asked, add self as co-author.

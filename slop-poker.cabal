@@ -9,6 +9,8 @@ executable slop-poker
   build-depends:
     ansi-terminal,
     base,
+    containers,
+    finite-typelits,
     vector-sized
   default-language: GHC2024
   default-extensions:

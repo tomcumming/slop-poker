@@ -1,20 +1,25 @@
 module Main where
 
+import Data.Finite (Finite)
+import Data.Set (Set)
 import Data.Vector.Sized (Vector)
 import GHC.TypeNats (Nat)
 
-newtype PlayerIdx = PlayerIdx Int
+newtype PlayerIdx (n :: Nat) = PlayerIdx (Finite n)
   deriving newtype (Eq, Ord, Enum)
   deriving stock (Show)
 
 newtype Chips = Chips Int
   deriving newtype (Eq, Ord, Enum, Num, Show)
 
+data AI = AI deriving (Show)
+
 data Player = Player
   { playerName :: String,
-    playerChips :: Chips
+    playerChips :: Chips,
+    playerAI :: Maybe AI
   }
-  deriving (Eq, Show)
+  deriving (Show)
 
 data BlindLevel = BlindLevel
   { blindSmall :: Chips,
@@ -46,29 +51,27 @@ data Card = Card
   }
   deriving (Eq, Show)
 
-data HandState (n :: Nat) = HandState
-  { hsPlayersInHand :: Vector n Bool,
-    hsContributions :: Vector n Chips,
-    hsHoleCards :: Vector n [Card],
-    hsBoard :: [Card]
-  }
-  deriving (Eq, Show)
-
 data GameConfig = GameConfig
   { gcStartStack :: Chips,
     gcHandsPerLevel :: Int,
     gcLevels :: [BlindLevel]
   }
-  deriving (Eq, Show)
+  deriving (Show)
 
 data GameState (n :: Nat) = GameState
   { gsPlayers :: Vector n Player,
-    gsDealerPos :: PlayerIdx,
+    gsDealerPos :: PlayerIdx n,
     gsCurrentHand :: Int,
-    gsCurrentBlindLvl :: Int,
-    gsHand :: HandState n
+    gsCurrentBlindLvl :: Int
   }
-  deriving (Eq, Show)
+  deriving (Show)
+
+data HandState (n :: Nat) = HandState
+  { hsPlayersInHand :: Set (PlayerIdx n),
+    hsContributions :: Vector n Chips,
+    hsNextPlayerToAct :: Maybe (PlayerIdx n)
+  }
+  deriving (Show)
 
 defaultGameConfig :: GameConfig
 defaultGameConfig =
