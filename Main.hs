@@ -4,9 +4,9 @@ module Main where
 
 import Data.Finite (Finite)
 import Data.Set (Set)
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 import Data.Vector.Sized (Vector)
-import qualified Data.Vector.Sized as Vector
+import Data.Vector.Sized qualified as Vector
 import GHC.TypeNats (Nat, type (+))
 
 newtype PlayerIdx (n :: Nat) = PlayerIdx (Finite n)
@@ -34,20 +34,18 @@ data BlindLevel = BlindLevel
 data Suit = Clubs | Diamonds | Hearts | Spades
   deriving (Eq, Show)
 
-newtype Rank = Rank Int
-  deriving newtype (Eq, Ord)
+newtype Rank = Rank (Finite 13)
+  deriving newtype (Eq, Ord, Enum, Bounded)
 
 instance Show Rank where
-  show (Rank 1) = "A"
-  show (Rank 10) = "T"
-  show (Rank 11) = "J"
-  show (Rank 12) = "Q"
-  show (Rank 13) = "K"
-  show (Rank n) = show n
-
-instance Bounded Rank where
-  minBound = Rank 1
-  maxBound = Rank 13
+  show (Rank rank) =
+    case fromEnum rank of
+      0 -> "A"
+      9 -> "T"
+      10 -> "J"
+      11 -> "Q"
+      12 -> "K"
+      n -> show (n + 1)
 
 data Card = Card
   { cardRank :: Rank,
@@ -92,7 +90,7 @@ data StepResult (n :: Nat)
   | HandDone
   deriving (Show)
 
-anyPlayerYetToAct :: forall n m. n ~ m + 1 => GameState n -> HandState n -> Bool
+anyPlayerYetToAct :: forall n m. (n ~ m + 1) => GameState n -> HandState n -> Bool
 anyPlayerYetToAct GameState {..} HandState {..}
   | hsFirstAction = True
   | otherwise =
@@ -107,8 +105,8 @@ anyPlayerYetToAct GameState {..} HandState {..}
     allInPlayers = Vector.ifoldr addAllInPlayer Set.empty gsPlayers
 
     addAllInPlayer idx Player {playerChips} players
-      | playerChips - Vector.index hsContributions idx == 0
-        = Set.insert (PlayerIdx idx) players
+      | playerChips - Vector.index hsContributions idx == 0 =
+          Set.insert (PlayerIdx idx) players
       | otherwise = players
 
 step :: GameState n -> HandState n -> StepResult n
