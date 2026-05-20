@@ -1,0 +1,9 @@
+cabal-version: 3.0
+name: slop-poker
+version: 0.1.0.0
+build-type: Simple
+
+executable slop-poker
+  main-is: Main.hs
+  build-depends: base
+  default-language: GHC2024
