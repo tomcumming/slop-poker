@@ -51,6 +51,13 @@ data Card = Card
   }
   deriving (Eq, Show)
 
+data BoardState
+  = BoardEmpty
+  | BoardFlop (Vector 3 Card)
+  | BoardTurn (Vector 4 Card)
+  | BoardRiver (Vector 5 Card)
+  deriving (Eq, Show)
+
 data GameConfig = GameConfig
   { gcStartStack :: Chips,
     gcHandsPerLevel :: Int,
@@ -68,8 +75,10 @@ data GameState (n :: Nat) = GameState
 
 data HandState (n :: Nat) = HandState
   { hsPlayersInHand :: Set (PlayerIdx n),
+    hsHoleCards :: Vector n (Vector 2 Card),
+    hsBoardState :: BoardState,
     hsContributions :: Vector n Chips,
-    hsNextPlayerToAct :: Maybe (PlayerIdx n)
+    hsNextPlayerToAct :: PlayerIdx n
   }
   deriving (Show)
 
