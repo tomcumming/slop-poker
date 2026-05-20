@@ -1,9 +1,13 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Main where
 
 import Data.Finite (Finite)
 import Data.Set (Set)
+import qualified Data.Set as Set
 import Data.Vector.Sized (Vector)
-import GHC.TypeNats (Nat)
+import qualified Data.Vector.Sized as Vector
+import GHC.TypeNats (Nat, type (+))
 
 newtype PlayerIdx (n :: Nat) = PlayerIdx (Finite n)
   deriving newtype (Eq, Ord, Enum)
@@ -78,9 +82,37 @@ data HandState (n :: Nat) = HandState
     hsHoleCards :: Vector n (Vector 2 Card),
     hsBoardState :: BoardState,
     hsContributions :: Vector n Chips,
+    hsFirstAction :: Bool,
     hsNextPlayerToAct :: PlayerIdx n
   }
   deriving (Show)
+
+data StepResult (n :: Nat)
+  = RequestPlayerAction (PlayerIdx n)
+  | HandDone
+  deriving (Show)
+
+anyPlayerYetToAct :: forall n m. n ~ m + 1 => GameState n -> HandState n -> Bool
+anyPlayerYetToAct GameState {..} HandState {..}
+  | hsFirstAction = True
+  | otherwise =
+      -- Act while a live non-all-in player is behind maxContribution,
+      -- or until action returns to hsNextPlayerToAct.
+      undefined
+  where
+    maxContribution :: Chips
+    maxContribution = Vector.maximum hsContributions
+
+    allInPlayers :: Set (PlayerIdx n)
+    allInPlayers = Vector.ifoldr addAllInPlayer Set.empty gsPlayers
+
+    addAllInPlayer idx Player {playerChips} players
+      | playerChips - Vector.index hsContributions idx == 0
+        = Set.insert (PlayerIdx idx) players
+      | otherwise = players
+
+step :: GameState n -> HandState n -> StepResult n
+step GameState {} HandState {} = undefined
 
 defaultGameConfig :: GameConfig
 defaultGameConfig =

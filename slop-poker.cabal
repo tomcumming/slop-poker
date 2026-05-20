@@ -14,5 +14,6 @@ executable slop-poker
     vector-sized
   default-language: GHC2024
   default-extensions:
+    RecordWildCards
     Strict
     StrictData
