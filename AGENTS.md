@@ -1,4 +1,4 @@
-- Work in small steps: (Unless specifically requested)
-  - Just add **2-3 functions or datatypes at a time**.
-  - Feel free to used undefined for placeholders.
-- Prepare commit messages in `COMMIT.md` when asked, add self as co-author.
+- Work in small steps, unless specifically requested otherwise:
+  - Add just **2-3 functions or datatypes at a time**.
+  - Feel free to use `undefined` for placeholders.
+- Prepare commit messages in `COMMIT.md` when asked, and add yourself as co-author.
