@@ -5,7 +5,12 @@ build-type: Simple
 
 executable slop-poker
   main-is: Main.hs
+  ghc-options: -Wall
   build-depends:
     ansi-terminal,
-    base
+    base,
+    vector-sized
   default-language: GHC2024
+  default-extensions:
+    Strict
+    StrictData
